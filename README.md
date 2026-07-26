@@ -5,7 +5,11 @@ An analytical answer to a question everyone can ask at a kitchen sink:
 
 *Scientific Journal of Intelligent Systems Research* · Vol. 8, No. 3 · 2026 · pp. 118–130
 AMME 2025 (8th Int'l Conference on Advances in Materials, Machinery, Electronics)
-ISBN 979-8-89183-215-2 · Boya Century Publishing · sole author
+ISBN 979-8-89183-215-2 · Boya Century Publishing · sole author · advisor: Dr. Xiaoqin Feng
+
+Grew out of three seasons of Young Physicists' Tournament work:
+CYPT 2026 — tournament champion & Special Prize · CYPT 2025 — Special Prize
+IYPT China national training team, 2025 and 2026
 
 ![Six computed Young–Laplace drop profiles growing side by side from nozzles of six inner diameters (0.99 to 5.42 mm) and letting go at their critical volumes. Labeled "computed profiles, not footage".](assets/six-drops.gif)
 
@@ -40,7 +44,9 @@ the *only* one.
 (0.01–3.0 mm/s, microcontroller-driven) feeding six thin-walled nozzles of
 inner diameters 0.99–5.42 mm, filmed at 815 fps. Volumes were extracted
 from the detachment frames in Fiji, then computed with a Python script.
-Ten drops per nozzle.
+Ten drops per nozzle for the critical-volume test — though over the
+project's life the rig, running semi-automatically, has logged more than
+80,000 drop intervals for the dynamics side of the problem.
 
 ## Results
 
