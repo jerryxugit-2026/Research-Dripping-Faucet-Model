@@ -1,0 +1,414 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Watch it let go · dripping-faucet-model</title>
+<meta name="description" content="Live numerical integration of the Young–Laplace equation: a hanging drop grows until it can no longer hold, at every nozzle size you like.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💧</text></svg>">
+<style>
+  :root {
+    --bg: #0A0C10; --panel: #10141B; --line: #1C232E;
+    --txt: #98A3B4; --hi: #EAF4FA; --water: #7FD1E8;
+    --red: #E4574E; --wall: #39424E;
+    --mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
+  }
+  * { box-sizing: border-box; margin: 0; }
+  html, body { background: var(--bg); color: var(--txt); font-family: var(--mono); }
+  body { min-height: 100vh; display: flex; flex-direction: column; }
+
+  header { padding: 28px 32px 18px; border-bottom: 1px solid var(--line); }
+  .eyebrow { font-size: 11px; letter-spacing: .22em; color: var(--txt); }
+  h1 { font-size: clamp(22px, 4vw, 34px); color: var(--hi); font-weight: 600;
+       letter-spacing: -.01em; margin-top: 8px; }
+  .sub { font-size: 13px; margin-top: 6px; max-width: 62ch; line-height: 1.55; }
+
+  main { flex: 1; display: grid; grid-template-columns: minmax(0, 1.45fr) minmax(300px, 1fr);
+         gap: 0; align-items: stretch; }
+  @media (max-width: 820px) { main { grid-template-columns: 1fr; } }
+
+  .viewport { position: relative; border-right: 1px solid var(--line); min-height: 420px; }
+  @media (max-width: 820px) { .viewport { border-right: 0; border-bottom: 1px solid var(--line);
+    height: 46vh; min-height: 320px; max-height: 430px; } }
+  canvas { display: block; width: 100%; height: 100%; }
+  .letgo { position: absolute; left: 50%; top: 58%; transform: translateX(-50%);
+           color: var(--red); font-size: 14px; letter-spacing: .3em; opacity: 0;
+           pointer-events: none; transition: opacity .15s; }
+  .letgo.on { opacity: 1; }
+
+  .console { padding: 26px 30px; display: flex; flex-direction: column; gap: 26px; }
+
+  .readouts { display: grid; grid-template-columns: 1fr 1fr; gap: 1px;
+              background: var(--line); border: 1px solid var(--line); }
+  .cell { background: var(--panel); padding: 14px 16px 12px; }
+  .cell .k { font-size: 10px; letter-spacing: .18em; }
+  .cell .v { font-size: 24px; color: var(--hi); margin-top: 4px; font-variant-numeric: tabular-nums; }
+  .cell .v small { font-size: 12px; color: var(--txt); }
+  .cell.crit .v { color: var(--water); }
+  .cell.crit.hot .v { color: var(--red); }
+
+  .ctl label { display: flex; justify-content: space-between; font-size: 11px;
+               letter-spacing: .14em; margin-bottom: 10px; }
+  .ctl label output { color: var(--hi); letter-spacing: 0; }
+  input[type=range] { -webkit-appearance: none; appearance: none; width: 100%;
+    height: 2px; background: var(--line); outline-offset: 6px; }
+  input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none;
+    width: 14px; height: 26px; border-radius: 2px; background: var(--hi);
+    border: 1px solid var(--bg); cursor: ew-resize; }
+  input[type=range]::-moz-range-thumb { width: 14px; height: 26px; border-radius: 2px;
+    background: var(--hi); border: 1px solid var(--bg); cursor: ew-resize; }
+  input[type=range]:focus-visible { outline: 2px solid var(--water); }
+  .detents { position: relative; height: 16px; margin-top: 6px; }
+  .detents span { position: absolute; transform: translateX(-50%); font-size: 9px;
+                  color: var(--txt); }
+  .detents span::before { content: ""; display: block; width: 1px; height: 5px;
+                          background: var(--txt); margin: 0 auto 2px; }
+  .chip { font-size: 11px; color: var(--water); min-height: 16px; margin-top: 8px; }
+  .note { font-size: 11px; line-height: 1.6; border-left: 2px solid var(--line);
+          padding-left: 12px; }
+  .note em { color: var(--hi); font-style: normal; }
+  .note.flash { border-left-color: var(--water); }
+
+  .valve { display: flex; gap: 12px; align-items: center; }
+  button { font: 600 13px/1 var(--mono); letter-spacing: .12em; color: var(--bg);
+    background: var(--hi); border: 0; padding: 13px 22px; border-radius: 3px;
+    cursor: pointer; }
+  button.secondary { background: transparent; color: var(--txt);
+    border: 1px solid var(--line); }
+  button:focus-visible { outline: 2px solid var(--water); outline-offset: 2px; }
+  button:hover { background: var(--water); }
+  button.secondary:hover { background: var(--panel); color: var(--hi); }
+
+  footer { border-top: 1px solid var(--line); padding: 18px 32px; font-size: 11px;
+           line-height: 1.7; }
+  footer a { color: var(--water); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="eyebrow">DRIPPING-FAUCET MODEL · YOUNG–LAPLACE, INTEGRATED LIVE</div>
+  <h1>Watch it let go.</h1>
+  <p class="sub">A drop grows from a nozzle until surface tension can no longer
+  answer for its weight. Open the valve. Change the nozzle. Try to make the
+  starting angle matter — it won't.</p>
+</header>
+
+<main>
+  <div class="viewport">
+    <canvas id="cv" aria-label="Live drawing of a hanging drop growing from a nozzle"></canvas>
+    <div class="letgo" id="letgo">LET&nbsp;GO</div>
+  </div>
+
+  <div class="console">
+    <div class="valve">
+      <button id="valve" aria-pressed="true">⏸ CLOSE VALVE</button>
+      <button id="reset" class="secondary">RESET</button>
+    </div>
+
+    <div class="readouts" role="status" aria-live="off">
+      <div class="cell"><div class="k">VOLUME</div>
+        <div class="v"><span id="rV">0.0</span> <small>µl</small></div></div>
+      <div class="cell crit" id="cellVc"><div class="k">V<sub>c</sub> · THIS SIMULATION</div>
+        <div class="v"><span id="rVc">–</span> <small>µl</small></div></div>
+      <div class="cell"><div class="k">RIM ANGLE β</div>
+        <div class="v"><span id="rB">0</span> <small>deg</small></div></div>
+      <div class="cell"><div class="k">BOND NUMBER</div>
+        <div class="v"><span id="rBo">0</span></div></div>
+    </div>
+
+    <div class="ctl">
+      <label for="d">NOZZLE INNER DIAMETER <output id="dOut">2.46 mm</output></label>
+      <input type="range" id="d" min="0.6" max="6.0" step="0.01" value="2.46">
+      <div class="detents" id="detents" aria-hidden="true"></div>
+      <div class="chip" id="chip"></div>
+    </div>
+
+    <div class="ctl">
+      <label for="th">INTRINSIC CONTACT ANGLE θ <output id="thOut">65°</output></label>
+      <input type="range" id="th" min="30" max="150" step="1" value="65">
+      <p class="note" id="thNote">θ sets how the drop <em>starts</em>. The rim is
+      pinned, so β climbs on its own as the drop grows — <em>where it lets go
+      doesn't remember where it began.</em></p>
+    </div>
+  </div>
+</main>
+
+<footer>
+  Companion visualization to: Z.&nbsp;Xu, <em>Analytical Analysis of a Dripping Faucet
+  Model based on the Perturbation Method</em>, AMME 2025 · SJISR vol.&nbsp;8 no.&nbsp;3,
+  pp.&nbsp;118–130. This page integrates the full axisymmetric Young–Laplace equation
+  numerically (water, 20&nbsp;°C, pinned rim); the paper derives a small-Bond
+  perturbation solution and bench-tests it at six nozzle bores —
+  <a href="https://github.com/jerryxugit-2026/dripping-faucet-model">paper &amp; data in the repo</a>.
+</footer>
+
+<script>
+"use strict";
+/* ---------- Young–Laplace pendant-drop solver (port of yl_solver.py) ---------- */
+const C_CAP = 998 * 9.81 / 0.0728 / 1e6;   // mm^-2, water 20 °C
+
+function integrateProfile(b, rn, ds = 0.004, sMax = 40) {
+  const n = Math.floor(sMax / ds);
+  const xs = [ds], zs = [ds * ds / (2 * b)], ps = [ds / b];
+  let asc = -1, desc = -1, bulges = 0;
+  const f = (x, z, p) => [Math.cos(p), Math.sin(p), 2 / b - C_CAP * z - Math.sin(p) / Math.max(x, 1e-9)];
+  for (let i = 0; i < n - 1; i++) {
+    const x = xs[i], z = zs[i], p = ps[i];
+    const k1 = f(x, z, p);
+    const k2 = f(x + ds / 2 * k1[0], z + ds / 2 * k1[1], p + ds / 2 * k1[2]);
+    const k3 = f(x + ds / 2 * k2[0], z + ds / 2 * k2[1], p + ds / 2 * k2[2]);
+    const k4 = f(x + ds * k3[0], z + ds * k3[1], p + ds * k3[2]);
+    xs.push(x + ds / 6 * (k1[0] + 2 * k2[0] + 2 * k3[0] + k4[0]));
+    zs.push(z + ds / 6 * (k1[1] + 2 * k2[1] + 2 * k3[1] + k4[1]));
+    ps.push(p + ds / 6 * (k1[2] + 2 * k2[2] + 2 * k3[2] + k4[2]));
+    const j = xs.length - 1;
+    if (j > 1 && xs[j - 1] > xs[j - 2] && xs[j] <= xs[j - 1]) {
+      if (++bulges > 1) break;
+    }
+    if (xs[j - 1] < rn && rn <= xs[j] && asc < 0 && bulges === 0) asc = j;
+    if (xs[j - 1] >= rn && rn > xs[j] && bulges === 1) { desc = j; break; }
+    if (ps[j] > Math.PI || zs[j] > 25) break;
+  }
+  const idx = desc >= 0 ? desc : asc;
+  if (idx < 0) return null;
+  return { xs: xs.slice(0, idx + 1), zs: zs.slice(0, idx + 1), beta: ps[idx] * 180 / Math.PI };
+}
+
+function volumeOf(xs, zs) {
+  let v = 0;
+  for (let i = 1; i < xs.length; i++)
+    v += (xs[i] * xs[i] + xs[i - 1] * xs[i - 1]) / 2 * (zs[i] - zs[i - 1]);
+  return Math.PI * v;
+}
+
+function familyFor(rn) {
+  const fam = [];
+  const N = 300, b0 = 0.05, b1 = 12;
+  for (let i = 0; i < N; i++) {
+    const b = b0 * Math.pow(b1 / b0, i / (N - 1));
+    const pr = integrateProfile(b, rn);
+    if (!pr) continue;
+    const V = volumeOf(pr.xs, pr.zs);
+    // downsample points for drawing
+    const step = Math.max(1, Math.floor(pr.xs.length / 260));
+    const px = [], pz = [];
+    for (let j = 0; j < pr.xs.length; j += step) { px.push(pr.xs[j]); pz.push(pr.zs[j]); }
+    px.push(pr.xs[pr.xs.length - 1]); pz.push(pr.zs[pr.zs.length - 1]);
+    fam.push({ V, h: pr.zs[pr.zs.length - 1], beta: pr.beta, px, pz });
+  }
+  fam.sort((a, b2) => a.h - b2.h);
+  let fold = 0;
+  for (let i = 1; i < fam.length; i++) if (fam[i].V > fam[fold].V) fold = i;
+  return fam.slice(0, fold + 1);
+}
+
+function pickByV(fam, v) {
+  let lo = 0, hi = fam.length - 1;
+  while (hi - lo > 1) { const m = (lo + hi) >> 1; (fam[m].V < v) ? lo = m : hi = m; }
+  return (v - fam[lo].V < fam[hi].V - v) ? fam[lo] : fam[hi];
+}
+
+/* ---------- state ---------- */
+const BENCH = [0.99, 1.58, 2.46, 2.96, 3.94, 5.42];
+const S = {
+  d: 2.46, theta: 65, fam: null, V: 0, phase: "grow",   // grow|flash|fall|rest
+  valve: true, tPhase: 0, fallY: 0, ghostUntil: 0,
+};
+const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+function rebuild() {
+  S.fam = familyFor(S.d / 2);
+  const vc = S.fam.length ? S.fam[S.fam.length - 1].V : NaN;
+  S.V = Math.min(S.V, vc * 0.05);
+  document.getElementById("rVc").textContent = isFinite(vc) ? vc.toFixed(1) : "–";
+  document.getElementById("rBo").textContent = (C_CAP * (S.d / 2) ** 2).toFixed(3);
+  const hit = BENCH.find(b => Math.abs(b - S.d) < 0.005);
+  document.getElementById("chip").textContent =
+    hit ? `● bench nozzle #${BENCH.indexOf(hit) + 1} of the paper's six` : "";
+}
+
+/* ---------- canvas ---------- */
+const cv = document.getElementById("cv"), ctx = cv.getContext("2d");
+let PXMM = 20, W = 0, H = 0, CX = 0, TIP = 0;
+function resize() {
+  const r = cv.parentElement.getBoundingClientRect(), dpr = devicePixelRatio || 1;
+  cv.width = r.width * dpr; cv.height = r.height * dpr;
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  W = r.width; H = r.height; CX = W / 2; TIP = Math.min(H * 0.30, 150);
+  PXMM = Math.min(W / 17, H / 19);
+}
+addEventListener("resize", () => { resize(); });
+
+function mmx(x) { return CX + x * PXMM; }
+function mmy(y) { return TIP + y * PXMM; }   // y in mm, + downward from rim
+
+function tracePath(p, dy) {
+  // profile arrays run apex -> rim; rim at y=0, apex at depth h
+  ctx.beginPath();
+  const n = p.px.length;
+  for (let i = n - 1; i >= 0; i--) {            // left side, rim down to apex
+    const X = mmx(-p.px[i]), Y = mmy(p.h - p.pz[i] + dy);
+    i === n - 1 ? ctx.moveTo(X, Y) : ctx.lineTo(X, Y);
+  }
+  for (let i = 0; i < n; i++)                   // right side, apex up to rim
+    ctx.lineTo(mmx(p.px[i]), mmy(p.h - p.pz[i] + dy));
+}
+
+function draw() {
+  ctx.clearRect(0, 0, W, H);
+  // mm grid
+  ctx.lineWidth = 1;
+  for (let g = -Math.ceil(CX / PXMM); g <= Math.ceil(CX / PXMM); g++) {
+    ctx.strokeStyle = g % 5 ? "#10141b" : "#151b25";
+    ctx.beginPath(); ctx.moveTo(mmx(g), 0); ctx.lineTo(mmx(g), H); ctx.stroke();
+  }
+  for (let g = -Math.ceil(TIP / PXMM); g <= Math.ceil((H - TIP) / PXMM); g++) {
+    ctx.strokeStyle = g % 5 ? "#10141b" : "#151b25";
+    ctx.beginPath(); ctx.moveTo(0, mmy(g)); ctx.lineTo(W, mmy(g)); ctx.stroke();
+  }
+  // nozzle
+  const rn = S.d / 2, wall = 0.45;
+  ctx.fillStyle = "#39424E";
+  ctx.fillRect(mmx(-rn - wall), 0, wall * PXMM, TIP);
+  ctx.fillRect(mmx(rn), 0, wall * PXMM, TIP);
+  ctx.strokeStyle = "#525E6E";
+  ctx.beginPath(); ctx.moveTo(mmx(-rn), 0); ctx.lineTo(mmx(-rn), TIP); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(mmx(rn), 0); ctx.lineTo(mmx(rn), TIP); ctx.stroke();
+
+  if (!S.fam || !S.fam.length) return;
+  const crit = S.fam[S.fam.length - 1];
+
+  // ghost of the starting cap while θ is being explored
+  if (performance.now() < S.ghostUntil) {
+    const t = S.theta * Math.PI / 180, R = rn / Math.sin(t);
+    ctx.setLineDash([3, 5]); ctx.strokeStyle = "rgba(127,209,232,.45)"; ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.arc(mmx(0), mmy(-R * Math.cos(t)), R * PXMM, Math.PI / 2 - t, Math.PI / 2 + t, false);
+    ctx.stroke(); ctx.setLineDash([]);
+  }
+
+  const prof = S.phase === "fall" || S.phase === "rest" || S.phase === "flash"
+    ? crit : pickByV(S.fam, Math.max(S.V, S.fam[0].V));
+  const red = S.phase === "flash";
+  const dy = S.phase === "fall" ? S.fallY : 0;
+
+  if (S.phase === "fall" || S.phase === "rest") {   // residual cap stays behind
+    tracePath(S.fam[0], 0);
+    glowStroke(false, 1);
+  }
+  if (S.phase !== "rest") {
+    tracePath(prof, dy);
+    glowStroke(red, S.phase === "fall" ? Math.max(0.25, 1 - S.fallY / 40) : 1);
+    if (S.phase === "fall") {                        // close the freed blob
+      const yTop = mmy(dy);
+      ctx.strokeStyle = "#EAF4FA";
+      ctx.beginPath(); ctx.moveTo(mmx(-prof.px[prof.px.length - 1]), yTop);
+      ctx.lineTo(mmx(prof.px[prof.px.length - 1]), yTop); ctx.stroke();
+    }
+  }
+  // scale bar
+  const bx = 24, by = H - 30;
+  ctx.strokeStyle = "#98A3B4"; ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(bx, by); ctx.lineTo(bx + 5 * PXMM, by); ctx.stroke();
+  for (let m = 0; m <= 5; m++) {
+    ctx.beginPath(); ctx.moveTo(bx + m * PXMM, by); ctx.lineTo(bx + m * PXMM, by - 5); ctx.stroke();
+  }
+  ctx.fillStyle = "#98A3B4"; ctx.font = "10px ui-monospace, Menlo, monospace";
+  ctx.fillText("5 mm", bx, by + 14);
+}
+
+function glowStroke(red, alpha) {
+  ctx.lineJoin = "round"; ctx.lineCap = "round";
+  ctx.globalAlpha = alpha;
+  if (red) {
+    ctx.strokeStyle = "#E4574E"; ctx.lineWidth = 1.6; ctx.stroke();
+  } else {
+    ctx.strokeStyle = "rgba(127,209,232,.10)"; ctx.lineWidth = 7; ctx.stroke();
+    ctx.strokeStyle = "rgba(168,216,234,.38)"; ctx.lineWidth = 2.6; ctx.stroke();
+    ctx.strokeStyle = "#EAF4FA"; ctx.lineWidth = 1.1; ctx.stroke();
+  }
+  ctx.globalAlpha = 1;
+}
+
+/* ---------- animation ---------- */
+let last = performance.now();
+function tick(now) {
+  const dt = Math.min(0.05, (now - last) / 1000); last = now;
+  const fam = S.fam;
+  if (fam && fam.length) {
+    const vc = fam[fam.length - 1].V;
+    if (S.phase === "grow" && S.valve) {
+      S.V += vc / 7 * dt;
+      if (S.V >= vc) { S.V = vc; setPhase(reduceMotion ? "rest" : "flash"); }
+    } else if (S.phase === "flash") {
+      if ((S.tPhase += dt) > 0.4) setPhase("fall");
+    } else if (S.phase === "fall") {
+      S.tPhase += dt; S.fallY = 0.5 * 9810 * S.tPhase * S.tPhase;
+      if (S.fallY > 60) setPhase("rest");
+    } else if (S.phase === "rest") {
+      if ((S.tPhase += dt) > (reduceMotion ? 1.6 : 0.9)) {
+        S.V = fam[0].V; setPhase("grow");
+      }
+    }
+    const prof = S.phase === "grow" ? pickByV(fam, Math.max(S.V, fam[0].V)) : fam[fam.length - 1];
+    document.getElementById("rV").textContent =
+      (S.phase === "rest" ? fam[0].V : S.V).toFixed(1);
+    document.getElementById("rB").textContent = prof.beta.toFixed(0);
+    document.getElementById("cellVc").classList.toggle("hot",
+      S.phase === "flash" || S.V > 0.97 * fam[fam.length - 1].V);
+    document.getElementById("letgo").classList.toggle("on", S.phase === "flash");
+  }
+  draw();
+  requestAnimationFrame(tick);
+}
+function setPhase(p) { S.phase = p; S.tPhase = 0; if (p !== "fall") S.fallY = 0; }
+
+/* ---------- controls ---------- */
+const dIn = document.getElementById("d"), thIn = document.getElementById("th");
+const dOut = document.getElementById("dOut"), thOut = document.getElementById("thOut");
+
+// snap the diameter slider to the six bench nozzles
+dIn.addEventListener("input", () => {
+  let v = parseFloat(dIn.value);
+  for (const b of BENCH) if (Math.abs(v - b) < 0.07) { v = b; break; }
+  S.d = v; dIn.value = v; dOut.textContent = v.toFixed(2) + " mm";
+  S.V = 0; setPhase("grow"); rebuild();
+});
+thIn.addEventListener("input", () => {
+  S.theta = parseInt(thIn.value, 10);
+  thOut.textContent = S.theta + "°";
+  S.ghostUntil = performance.now() + 1800;
+  const note = document.getElementById("thNote");
+  note.classList.add("flash");
+  note.innerHTML = "start changed — <em>V<sub>c</sub> didn't move.</em> The rim is pinned; β's climb is set by the equation, not by θ.";
+  clearTimeout(thIn._t);
+  thIn._t = setTimeout(() => note.classList.remove("flash"), 1200);
+});
+
+const valveBtn = document.getElementById("valve");
+valveBtn.addEventListener("click", () => {
+  S.valve = !S.valve;
+  valveBtn.textContent = S.valve ? "⏸ CLOSE VALVE" : "▶ OPEN VALVE";
+  valveBtn.setAttribute("aria-pressed", String(S.valve));
+});
+document.getElementById("reset").addEventListener("click", () => {
+  S.V = 0; setPhase("grow");
+});
+
+// bench detent marks under the d slider
+(function () {
+  const box = document.getElementById("detents");
+  for (let i = 0; i < BENCH.length; i++) {
+    const s = document.createElement("span");
+    s.style.left = ((BENCH[i] - 0.6) / (6.0 - 0.6) * 100) + "%";
+    s.textContent = "#" + (i + 1);
+    box.appendChild(s);
+  }
+})();
+
+resize(); rebuild(); requestAnimationFrame(tick);
+</script>
+</body>
+</html>
