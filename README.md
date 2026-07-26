@@ -1,4 +1,4 @@
-# Dripping-Faucet-Model
+# Research-Dripping-Faucet-Model
 
 An analytical answer to a question everyone can ask at a kitchen sink:
 **at exactly what volume does a hanging drop let go?**
@@ -17,7 +17,7 @@ IYPT China national training team, 2025 and 2026
 profiles (water, 20 °C), not camera footage — the bench data is in the
 table below.*
 
-**[▶ Watch it let go — interactive](https://jerryxugit-2026.github.io/Dripping-Faucet-Model/)**
+**[▶ Watch it let go — interactive](https://jerryxugit-2026.github.io/Research-Dripping-Faucet-Model/)**
 
 ---
 
@@ -66,7 +66,7 @@ radius and Bond number — and it is **independent of the liquid's intrinsic
 contact angle**. However the drop starts, the contact angle at the rim
 evolves toward 90° as it grows; where it lets go doesn't remember where it
 began. You can drag that slider yourself in the
-[interactive version](https://jerryxugit-2026.github.io/Dripping-Faucet-Model/).
+[interactive version](https://jerryxugit-2026.github.io/Research-Dripping-Faucet-Model/).
 
 ## What's in this repo
 
