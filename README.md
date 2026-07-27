@@ -4,7 +4,7 @@ An analytical answer to a question everyone can ask at a kitchen sink:
 **at exactly what volume does a hanging drop let go?**
 
 *Scientific Journal of Intelligent Systems Research* · Vol. 8, No. 3 · 2026 · pp. 118–130
-AMME 2025 (8th Int'l Conference on Advances in Materials, Machinery, Electronics)
+DOI [10.54691/28yasx98](https://doi.org/10.54691/28yasx98) · AMME 2025 (8th Int'l Conference on Advances in Materials, Machinery, Electronics)
 ISBN 979-8-89183-215-2 · Boya Century Publishing · sole author · advisor: Dr. Xiaoqin Feng
 
 Grew out of three seasons of Young Physicists' Tournament work:
@@ -97,13 +97,12 @@ photos/   the rig, the nozzles, detachment frame series [being prepared]
 
 ## The paper
 
-> Z. Xu, "Analytical Analysis of a Dripping Faucet Model based on the
-> Perturbation Method," in *Proc. 8th Int'l Conf. on Advances in
-> Materials, Machinery, Electronics (AMME 2025)*, Scientific Journal of
-> Intelligent Systems Research, vol. 8, no. 3, pp. 118–130, 2026.
-> ISBN 979-8-89183-215-2.
+> Xu, Ziyang. 2026. "Analytical Analysis of a Dripping Faucet Model Based
+> on the Perturbation Method." *Scientific Journal of Intelligent Systems
+> Research* 8 (3): 118–30. https://doi.org/10.54691/28yasx98.
+> AMME 2025 · ISBN 979-8-89183-215-2.
 
-Full text: [bcpublication.org/index.php/SJISR/AMME2025](https://bcpublication.org/index.php/SJISR/AMME2025)
+Full text: [bcpublication.org/index.php/SJISR/article/view/9299](https://bcpublication.org/index.php/SJISR/article/view/9299)
 
 ---
 
