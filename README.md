@@ -7,8 +7,8 @@ An analytical answer to a question everyone can ask at a kitchen sink:
 DOI [10.54691/28yasx98](https://doi.org/10.54691/28yasx98) · AMME 2025 (8th Int'l Conference on Advances in Materials, Machinery, Electronics)
 ISBN 979-8-89183-215-2 · Boya Century Publishing · sole author · advisor: Dr. Xiaoqin Feng
 
-Grew out of three seasons of Young Physicists' Tournament work:
-CYPT 2026 — tournament champion & Special Prize · CYPT 2025 — Special Prize
+The paper began as my first CYPT competition problem, then outgrew the contest:
+CYPT 2025 — Special Prize · CYPT 2026 — tournament champion & Special Prize
 IYPT China national training team, 2025 and 2026
 
 ![Six computed Young–Laplace drop profiles growing side by side from nozzles of six inner diameters (0.99 to 5.42 mm) and letting go at their critical volumes. Labeled "computed profiles, not footage".](assets/six-drops.gif)
@@ -105,9 +105,9 @@ photos/   the rig, the nozzles, detachment frame series [being prepared]
 Full text: [bcpublication.org/index.php/SJISR/article/view/9299](https://bcpublication.org/index.php/SJISR/article/view/9299)
 
 *Dates, plainly: this repository was assembled in July 2026, after
-publication. The research is older — the faucet arrived as a YPT problem
-in 2024, and the rig, the data and the theory grew across three tournament
-seasons. Commit dates mark the archiving, not the experiments.*
+publication. The research is older — the faucet arrived as my first CYPT
+problem in 2024, and the rig, the data and the theory grew across two
+tournament seasons. Commit dates mark the archiving, not the experiments.*
 
 ---
 
