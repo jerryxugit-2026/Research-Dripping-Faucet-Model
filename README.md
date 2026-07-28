@@ -95,6 +95,16 @@ photos/   the rig, the nozzles, detachment frame series [being prepared]
   period-doubles into chaos — a classical story, and deliberately not this
   paper's.
 
+## Where this is going
+
+The quasi-static question is answered; the field isn't finished with me.
+The follow-up study — in progress now — moves from hanging drops to
+sitting ones: low-volatility sessile droplets at moderate contact angle,
+heated periodically about their axis. Spectral and modal analysis of the
+Bénard–Marangoni short-wave instability, hydrothermal waves, and the
+Hopf bifurcation of the modulated flow field. It has already turned up
+behaviour I didn't expect; the write-up is underway.
+
 ## The paper
 
 > Xu, Ziyang. 2026. "Analytical Analysis of a Dripping Faucet Model Based
