@@ -104,6 +104,11 @@ photos/   the rig, the nozzles, detachment frame series [being prepared]
 
 Full text: [bcpublication.org/index.php/SJISR/article/view/9299](https://bcpublication.org/index.php/SJISR/article/view/9299)
 
+*Dates, plainly: this repository was assembled in July 2026, after
+publication. The research is older — the faucet arrived as a YPT problem
+in 2023, and the rig, the data and the theory grew across three tournament
+seasons. Commit dates mark the archiving, not the experiments.*
+
 ---
 
 *One of four directions on [my profile](https://github.com/jerryxugit-2026) —
