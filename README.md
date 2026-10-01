@@ -3,9 +3,13 @@
 An analytical answer to a question everyone can ask at a kitchen sink:
 **at exactly what volume does a hanging drop let go?**
 
-*Scientific Journal of Intelligent Systems Research* · Vol. 8, No. 3 · 2026 · pp. 118–130
-DOI [10.54691/28yasx98](https://doi.org/10.54691/28yasx98) · AMME 2025 (8th Int'l Conference on Advances in Materials, Machinery, Electronics)
-ISBN 979-8-89183-215-2 · Boya Century Publishing · sole author · advisor: Dr. Xiaoqin Feng
+*Ziyang Xu. Analytical Analysis of a Dripping Faucet Model based on the
+Perturbation Method[C]//Proceedings of the 8th International Conference on
+Advances in Materials, Machinery, Electronics (AMME 2025). Scientific Journal of
+Intelligent Systems Research, 2026, 8(3): 118-130.
+DOI:[10.54691/28yasx98](https://doi.org/10.54691/28yasx98)*
+
+*ISBN 979-8-89183-215-2 · Boya Century Publishing · sole author · advisor: Dr. Xiaoqin Feng*
 
 The paper began as my first CYPT competition problem, then outgrew the contest:
 CYPT 2025 — Special Prize · CYPT 2026 — tournament champion & Special Prize
@@ -107,9 +111,12 @@ behaviour I didn't expect; the write-up is underway.
 
 ## The paper
 
-> Xu, Ziyang. 2026. "Analytical Analysis of a Dripping Faucet Model Based
-> on the Perturbation Method." *Scientific Journal of Intelligent Systems
-> Research* 8 (3): 118–30. https://doi.org/10.54691/28yasx98.
+> Ziyang Xu. Analytical Analysis of a Dripping Faucet Model based on the
+> Perturbation Method[C]//Proceedings of the 8th International Conference on
+> Advances in Materials, Machinery, Electronics (AMME 2025). Scientific Journal of
+> Intelligent Systems Research, 2026, 8(3): 118-130.
+> DOI:[10.54691/28yasx98](https://doi.org/10.54691/28yasx98)
+>
 > AMME 2025 · ISBN 979-8-89183-215-2.
 
 Full text: [bcpublication.org/index.php/SJISR/article/view/9299](https://bcpublication.org/index.php/SJISR/article/view/9299)
