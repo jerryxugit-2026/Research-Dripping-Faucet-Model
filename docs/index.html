@@ -22,6 +22,9 @@
   h1 { font-size: clamp(22px, 4vw, 34px); color: var(--hi); font-weight: 600;
        letter-spacing: -.01em; margin-top: 8px; }
   .sub { font-size: 13px; margin-top: 6px; max-width: 62ch; line-height: 1.55; }
+  .cite { font-size: 11px; margin-top: 12px; max-width: 96ch; line-height: 1.7; }
+  .cite a { color: var(--water); text-decoration: none; }
+  .cite a:hover { text-decoration: underline; }
 
   main { flex: 1; display: grid; grid-template-columns: minmax(0, 1.45fr) minmax(300px, 1fr);
          gap: 0; align-items: stretch; }
@@ -93,6 +96,11 @@
   <p class="sub">A drop grows from a nozzle until surface tension can no longer
   answer for its weight. Open the valve. Change the nozzle. Try to make the
   starting angle matter — it won't.</p>
+  <p class="cite">Published — Ziyang Xu. Analytical Analysis of a Dripping Faucet
+  Model based on the Perturbation Method[C]//Proceedings of the 8th International
+  Conference on Advances in Materials, Machinery, Electronics (AMME 2025).
+  Scientific Journal of Intelligent Systems Research, 2026, 8(3): 118-130.
+  DOI:<a href="https://doi.org/10.54691/28yasx98">10.54691/28yasx98</a></p>
 </header>
 
 <main>
@@ -136,9 +144,12 @@
 </main>
 
 <footer>
-  Companion visualization to: Z.&nbsp;Xu, <em>Analytical Analysis of a Dripping Faucet
-  Model based on the Perturbation Method</em>, AMME 2025 · SJISR vol.&nbsp;8 no.&nbsp;3,
-  pp.&nbsp;118–130. This page integrates the full axisymmetric Young–Laplace equation
+  Companion visualization to: Ziyang Xu. <em>Analytical Analysis of a Dripping Faucet
+  Model based on the Perturbation Method</em>[C]//Proceedings of the 8th International
+  Conference on Advances in Materials, Machinery, Electronics (AMME 2025). Scientific
+  Journal of Intelligent Systems Research, 2026, 8(3): 118-130.
+  DOI:<a href="https://doi.org/10.54691/28yasx98">10.54691/28yasx98</a>.
+  This page integrates the full axisymmetric Young–Laplace equation
   numerically (water, 20&nbsp;°C, pinned rim); the paper derives a small-Bond
   perturbation solution and bench-tests it at six nozzle bores —
   <a href="https://github.com/jerryxugit-2026/Research-Dripping-Faucet-Model">paper &amp; data in the repo</a>.
