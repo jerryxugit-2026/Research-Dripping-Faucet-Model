@@ -13,7 +13,7 @@ DOI:[10.54691/28yasx98](https://doi.org/10.54691/28yasx98)*
 
 The paper began as my first CYPT competition problem, then outgrew the contest:
 CYPT 2025 — Special Prize · CYPT 2026 — tournament champion & Special Prize
-IYPT China national training team, 2025 and 2026
+IYPT China national training team, 2025
 
 ![Six computed Young–Laplace drop profiles growing side by side from nozzles of six inner diameters (0.99 to 5.42 mm) and letting go at their critical volumes. Labeled "computed profiles, not footage".](assets/six-drops.gif)
 
